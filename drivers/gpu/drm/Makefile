@@ -161,6 +161,12 @@ drm_kms_helper-$(CONFIG_DRM_FBDEV_EMULATION) += drm_fb_helper.o
 obj-$(CONFIG_DRM_KMS_HELPER) += drm_kms_helper.o
 
 #
+# DRM Secure Graphics via TEE support
+#
+
+obj-$(CONFIG_DRM_SECURE_GRAPHICS) += drm_secure_graphics.o 
+
+#
 # Drivers and the rest
 #
 

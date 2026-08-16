@@ -179,6 +179,15 @@ config DRM_CLIENT
 	  option. Drivers that support the default clients should
 	  select DRM_CLIENT_SELECTION instead.
 
+config DRM_SECURE_GRAPHICS
+	bool "DRM Secure Graphics"
+	depends on DRM
+	help
+	  Enables support for Secure Graphics Transaction metadata
+	  and security validation, with the security policy
+	  authority residing with the ARM TrustZone's TEE environment
+	  and a security authorizer existing in TEE as a TA.
+
 source "drivers/gpu/drm/clients/Kconfig"
 
 config DRM_LOAD_EDID_FIRMWARE
