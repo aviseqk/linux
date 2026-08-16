@@ -44,6 +44,8 @@
 #include <drm/drm_writeback.h>
 #include <drm/drm_colorop.h>
 
+#include <drm/drm_secure_graphics.h>
+
 #include "drm_crtc_internal.h"
 #include "drm_internal.h"
 
@@ -1781,6 +1783,12 @@ int drm_atomic_commit(struct drm_atomic_commit *state)
 		drm_atomic_print_new_state(state, &p);
 
 	ret = drm_atomic_check_only(state);
+	if (ret)
+		return ret;
+	
+	drm_dbg_atomic(state->dev, "secure_graphics validating\n");
+
+	ret = drm_secure_graphics_validate(state);
 	if (ret)
 		return ret;
 
