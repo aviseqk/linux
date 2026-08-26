@@ -198,3 +198,5 @@ obj-y				+= resctrl/
 
 obj-$(CONFIG_DIBS)		+= dibs/
 obj-$(CONFIG_S390)		+= s390/
+
+obj-$(CONFIG_OPTEE_SECURE_GRAPHICS_DRIVERS) += securegraphics/
