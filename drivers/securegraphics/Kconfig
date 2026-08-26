@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Configuration for OPTEE Secure Graphics Related Kernel Drivers
+#
+
+config OPTEE_SECURE_GRAPHICS_DRIVERS
+    bool "OP-TEE Secure Graphics Client drivers"
+    default n
+
+if OPTEE_SECURE_GRAPHICS_DRIVERS
+
+config OPTEE_SECURE_GRAPHICS_TEST
+	tristate "OP-TEE Secure Graphics Test Driver"
+	depends on OPTEE
+	help
+		Minimal kernel-side OPTEE client used to test
+		bi-directional communication with secure graphics test TA
+
+endif
+
