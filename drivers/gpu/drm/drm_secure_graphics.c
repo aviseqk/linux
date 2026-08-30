@@ -13,6 +13,7 @@
 #include <drm/drm_secure_graphics.h>
 
 #include "drm_secure_graphics_internal.h"
+#include "../drivers/securegraphics/optee-sg.h"
 
 /*
  * Security Provenance Classification
@@ -277,6 +278,24 @@ int drm_secure_graphics_validate(
 		return ret;
 
 	/* Validation Step */
+	drm_dbg_atomic(state->dev, "REACHED THE VALIDATION STEP: calling sg_tee_validate() from atomic commit path\n");
+
+	struct sg_validate_result res;
+
+	ret = sg_tee_validate(&sg_metadata, &res);
+	if (ret)
+		return ret;
+
+	if (res.decision == SG_VALIDATE_DENY) {
+		drm_info(state->dev, "SG denied the Atomic Commit Transaction\n");
+		return -EPERM;
+	}
+
+	if (res.reason == 404) {
+		drm_info(state->dev, "SG did not validate because: SG-TEE Driver Not Ready\n");
+	}
+
+	drm_info(state->dev, "SG validated the request as: decision: %d reason: %d\n", res.decision, res.reason);
 
 	return 0;
 }
