@@ -2,6 +2,11 @@
 
 #include <drm/drm_atomic.h>
 
+/* Commented out because the following structs and all are also part of the DRM-SG Transport Protocol,
+ * and hence are needed in the secure_graphics OPTEE driver, hence being shifted to include/drm/drm_secure_graphics.h header file
+ * for it to become available for kernel-wide public usage */
+
+#if 0
 #define SG_METADATA_VERSION		1
 #define SG_MAX_CRTCS			8
 #define SG_MAX_CONNECTORS		8
@@ -91,6 +96,8 @@ struct sg_transaction_metadata {
 
 	struct sg_plane_metadata planes[SG_MAX_PLANES];
 };
+
+#endif
 
 
 /* 
