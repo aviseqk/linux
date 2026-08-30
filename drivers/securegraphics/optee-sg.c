@@ -49,7 +49,6 @@ static struct sg_tee_data pvt_data;
 int sg_tee_validate(const struct sg_transaction_metadata *metadata, 
 		struct sg_validate_result *result)
 {
-	pr_info("entered sg_tee_validate() function\n");
 	int ret = 0;
 	struct tee_ioctl_invoke_arg inv_arg;
 	struct tee_param param[4];
@@ -58,7 +57,7 @@ int sg_tee_validate(const struct sg_transaction_metadata *metadata,
 
 	// init case when first qemu DRM placeholder image boots but the driver aint ready hence no shm_va available
 	if (!pvt_data.ready || !pvt_data.shm_va || !pvt_data.shm_size) {
-		pr_info("SG TEE Driver not ready, skipping validation\n");
+		pr_debug("SG TEE Driver not ready, skipping validation\n");
 		result->decision = SG_VALIDATE_ALLOW;
 		result->reason = 404; // make it SG_REASON_TEE_NOT_READY
 		goto out;
@@ -95,16 +94,10 @@ int sg_tee_validate(const struct sg_transaction_metadata *metadata,
 	param[0].u.memref.shm_offs = 0;
 	param[0].u.memref.size = SG_STATIC_SHM_SIZE;
 	
-	pr_info("ctx=%px session=%u shm=%px shm_va=%px\n",
-        pvt_data.ctx,
-        pvt_data.session_id,
-        pvt_data.shm,
-        pvt_data.shm_va);
-
-	struct tee_context *ctx = pvt_data.ctx;
-
-	pr_info("ctx       = %px\n", ctx);
-	pr_info("teedev    = %px\n", ctx->teedev);
+	//pr_info("ctx=%px session=%u shm=%px shm_va=%px\n", pvt_data.ctx, pvt_data.session_id, pvt_data.shm, pvt_data.shm_va);
+	//struct tee_context *ctx = pvt_data.ctx;
+	//pr_info("ctx       = %px\n", ctx);
+	//pr_info("teedev    = %px\n", ctx->teedev);
 
 	ret = tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
 	if ((ret < 0) || (inv_arg.ret != 0)) {
@@ -115,8 +108,9 @@ int sg_tee_validate(const struct sg_transaction_metadata *metadata,
 	}
 
 	// now the TA has responded, and the shared buffer must have been modified
-	pr_info("POST TA RESPONSE\n");
-	pr_info("request.header.size: %d request.header.response_size: %d\n", request.header.size, request.header.response_size);
+	pr_debug("POST TA RESPONSE\n");
+	pr_debug("request.header.size: %u request.header.response_size: %u\n",
+			request.header.size, request.header.response_size);
 	print_serialized_bytes(pvt_data.shm_va, request.header.size + request.header.response_size, 0);
 
 	//TODO: Resume here: Deserialize the TA returned buffer to get the sg_validate_response
@@ -133,7 +127,6 @@ int sg_tee_validate(const struct sg_transaction_metadata *metadata,
 
 out:
 	mutex_unlock(&pvt_data.lock);
-	pr_info("exiting sg_tee_validate() function\n");
 	return ret;
 }
 
@@ -204,7 +197,7 @@ static int optee_sg_probe(struct tee_client_device *sg_tee_device)
 
 	dev_info(dev, "TEE Context/Session/SHM initialized successfully\n");
 
-	dev_info(dev, "optee_sg driver: TEST CASE: fake DRM call with no actual TA call\n");
+	//dev_info(dev, "optee_sg driver: TEST CASE: fake DRM call with no actual TA call\n");
 	return 0;
 
 out_shm:

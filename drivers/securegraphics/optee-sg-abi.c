@@ -31,8 +31,6 @@ static void sg_read_u32(u8 *buf, size_t *offset, size_t size, u32 *value)
 /* Serialization Helpers */
 static void sg_write_u32(u8 *buf, size_t *offset, u32 value)
 {
-    pr_info("sg_write_u32: buf=%px offset_ptr=%px offset=%zu value=%u\n",
-            buf, offset, offset ? *offset : 0, value); 
     u32 v = cpu_to_le32(value);
     memcpy(buf + *offset, &v, sizeof(v));
     *offset += sizeof(v);
@@ -55,7 +53,6 @@ static void sg_write_s32(u8 *buf, size_t *offset, s32 value)
 static void sg_serialize_crtc(u8 *buf, size_t *offset,
 	const struct sg_crtc_metadata *crtc)
 {
-    pr_info("entered sg_serialize_crtc\n");
     sg_write_u32(buf, offset, crtc->crtc_id);
     sg_write_u32(buf, offset, crtc->enable);
     sg_write_u32(buf, offset, crtc->active);
@@ -67,7 +64,6 @@ static void sg_serialize_crtc(u8 *buf, size_t *offset,
 static void sg_serialize_connector(u8 *buf, size_t *offset,
 	const struct sg_connector_metadata *connector)
 {
-    pr_info("entered sg_serialize_connector\n");
     sg_write_u32(buf, offset, connector->connector_id);
     sg_write_u32(buf, offset, connector->crtc_id);
 }
@@ -75,14 +71,12 @@ static void sg_serialize_connector(u8 *buf, size_t *offset,
 static void sg_serialize_buffer(u8 *buf, size_t *offset,
 	const struct sg_buffer_metadata *buffer)
 {
-    pr_info("entered sg_serialize_buffer\n");
     sg_write_u32(buf, offset, buffer->security_class);
 }
 
 static void sg_serialize_plane(u8 *buf, size_t *offset,
 	const struct sg_plane_metadata *plane)
 {
-    pr_info("entered sg_serialize_plane\n");
     sg_write_u32(buf, offset, plane->plane_id);
     sg_write_u32(buf, offset, plane->crtc_id);
     sg_write_u32(buf, offset, plane->fb_id);
@@ -113,7 +107,6 @@ static void sg_serialize_plane(u8 *buf, size_t *offset,
 void sg_serialize_header(u8 *buf, size_t *offset,
 	const struct sg_request_header *header)
 {
-    pr_info("entered sg_serialize_header\n");
     sg_write_u32(buf, offset, header->version);
     sg_write_u32(buf, offset, header->command);
     sg_write_u32(buf, offset, header->size);
@@ -124,8 +117,6 @@ void sg_serialize_header(u8 *buf, size_t *offset,
 void sg_serialize_transaction(u8 *buf, size_t *offset,
 	const struct sg_transaction_metadata *metadata)
 {
-    pr_info("entered sg_serialize_transaction\n");
-    pr_info("sg_serialize_transaction: buf=%px offset=%zu metadata=%px\n",buf, *offset, metadata);
     sg_write_u32(buf, offset, metadata->version);
 
 
@@ -150,13 +141,11 @@ void sg_serialize_transaction(u8 *buf, size_t *offset,
 int sg_serialize_request(u8 *buffer, size_t size,
 		struct sg_validate_request *request)
 {
-	pr_info("entered sg_serialize_request: buffer=%px \n",buffer);
 
 	size_t offset = sizeof(struct sg_request_header);
-	pr_info("proposed reserving offset: %zu\n", offset);
 
 	sg_serialize_transaction(buffer, &offset, &request->metadata);
-	pr_info("post sg_serialize_transaction offset: %lu\n", offset);
+
 	request->header.size = offset;
 	request->header.response_offset = offset;
 
@@ -177,15 +166,16 @@ int sg_deserialize_response(u8 *buffer, size_t offset, size_t size,
     return 0;
 }
 
-void print_serialized_bytes(u8 *buf, u32 req_size, u32 offset)
+void print_serialized_bytes(const u8 *buf, u32 req_size, u32 offset)
 {
-    pr_info("serialized request size: %u\n", req_size);
-    pr_info("response offset: %u\n", offset);
+    pr_debug("serialized request size: %u\n", req_size);
+    pr_debug("response offset: %u\n", offset);
 
-    pr_info("hex dump:");
+    pr_debug("hex dump:");
 
-    print_hex_dump(KERN_INFO, "", DUMP_PREFIX_NONE,
-                   8, 1, buf, req_size, false);}
+    print_hex_dump_debug("", DUMP_PREFIX_NONE,
+                   8, 1, buf, req_size, false);
+}
 
 void generate_sg_request_header(struct sg_request_header *header, u32 size)
 {
@@ -196,20 +186,20 @@ void generate_sg_request_header(struct sg_request_header *header, u32 size)
 	header->response_size = sizeof(struct sg_validate_response);
 }
 
-void print_sg_request_header(struct sg_request_header *header)
+void print_sg_request_header(const struct sg_request_header *header)
 {
-	pr_info("struct sg_request_header:\n");
-	pr_info("SG_ABI_VERSION: %u\n", header->version);
-	pr_info("COMMAND: %u\n", header->command);
-	pr_info("SIZE: %u\n", header->size);
-	pr_info("RESPONSE_OFFSET: %u\n", header->response_offset);
-	pr_info("RESPONSE_SIZE: %u\n", header->response_size);
+	pr_debug("struct sg_request_header:\n");
+	pr_debug("SG_ABI_VERSION: %u\n", header->version);
+	pr_debug("COMMAND: %u\n", header->command);
+	pr_debug("SIZE: %u\n", header->size);
+	pr_debug("RESPONSE_OFFSET: %u\n", header->response_offset);
+	pr_debug("RESPONSE_SIZE: %u\n", header->response_size);
 }
 
-void print_sg_response(struct sg_validate_response *resp)
+void print_sg_response(const struct sg_validate_response *resp)
 {
-	pr_info("struct sg_validate_response:\n");
-	pr_info("VERSION: %u\n",resp->version);
-	pr_info("DECISION: %u\n",resp->decision);
-	pr_info("REASON: %u\n",resp->reason);
+	pr_debug("struct sg_validate_response:\n");
+	pr_debug("VERSION: %u\n",resp->version);
+	pr_debug("DECISION: %u\n",resp->decision);
+	pr_debug("REASON: %u\n",resp->reason);
 }

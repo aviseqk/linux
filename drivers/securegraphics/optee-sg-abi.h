@@ -53,9 +53,9 @@ void sg_serialize_header(u8 *buf, size_t *offset,
 	const struct sg_request_header *header);
 
 
-void print_sg_response(struct sg_validate_response *resp);
-void print_sg_request_header(struct sg_request_header *header);
-void print_serialized_bytes(u8 *buf, u32 req_size, u32 offset);
+void print_sg_response(const struct sg_validate_response *resp);
+void print_sg_request_header(const struct sg_request_header *header);
+void print_serialized_bytes(const u8 *buf, u32 req_size, u32 offset);
 void generate_sg_request_header(struct sg_request_header *header, u32 size);
 
 

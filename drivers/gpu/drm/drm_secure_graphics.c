@@ -278,7 +278,8 @@ int drm_secure_graphics_validate(
 		return ret;
 
 	/* Validation Step */
-	drm_dbg_atomic(state->dev, "REACHED THE VALIDATION STEP: calling sg_tee_validate() from atomic commit path\n");
+	drm_dbg_atomic(state->dev,
+			"calling sg_tee_validate() from atomic commit path\n");
 
 	struct sg_validate_result res;
 
@@ -295,7 +296,7 @@ int drm_secure_graphics_validate(
 		drm_info(state->dev, "SG did not validate because: SG-TEE Driver Not Ready\n");
 	}
 
-	drm_info(state->dev, "SG validated the request as: decision: %d reason: %d\n", res.decision, res.reason);
+	drm_dbg_atomic(state->dev, "SG validated the request as: decision: %d reason: %d\n", res.decision, res.reason);
 
 	return 0;
 }
