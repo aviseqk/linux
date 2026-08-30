@@ -16,5 +16,13 @@ config OPTEE_SECURE_GRAPHICS_TEST
 		Minimal kernel-side OPTEE client used to test
 		bi-directional communication with secure graphics test TA
 
+## TODO: add config option for the real SG OPTEE driver
+config OPTEE_SECURE_GRAPHICS
+	tristate "OP-TEE Secure Graphics Actual TA Driver"
+	depends on OPTEE
+	help
+		Proper kernel-side OPTEE client driver used for real
+		DRM Atomic Commit Path Validation and Policy Trust
+		with the Secure Graphics TA existing in Secure World
 endif
 
