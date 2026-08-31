@@ -13,7 +13,7 @@
 #include <drm/drm_secure_graphics.h>
 
 #include "drm_secure_graphics_internal.h"
-#include "../drivers/securegraphics/optee-sg.h"
+#include "../drivers/securegraphics/sg-tee.h"
 
 /*
  * Security Provenance Classification

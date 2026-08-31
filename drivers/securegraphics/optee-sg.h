@@ -20,9 +20,12 @@ struct sg_validate_result {
 	int reason;
 };
 
+#define SG_REASON_TEE_NOT_READY	404
+
 /* C API exposed to DRM for communication with the TEE layer */
+/*
 int sg_tee_validate(const struct sg_transaction_metadata *metadata, 
-		struct sg_validate_result *result);
+		struct sg_validate_result *result);*/
 
 
 #endif
