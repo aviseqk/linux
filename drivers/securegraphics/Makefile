@@ -5,5 +5,5 @@
 
 obj-$(CONFIG_OPTEE_SECURE_GRAPHICS_TEST) += secure_graphics_test.o
 
-obj-$(CONFIG_OPTEE_SECURE_GRAPHICS) += optee-sg.o optee-sg-abi.o
+obj-$(CONFIG_OPTEE_SECURE_GRAPHICS) += optee-sg.o sg-tee.o optee-sg-abi.o
 
